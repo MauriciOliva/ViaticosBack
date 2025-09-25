@@ -25,18 +25,28 @@ const viaticosSchema = new Schema({
         required: true,
         trim: true
     },
-    Movilizacion: {
-        monto: {
-            type: Number,
-            required: true,    
-            min: 0
-        },
+    // ✅ NUEVO: Movilización como array para múltiples medios
+    Movilizacion: [{
         tipo: {
             type: String,
             required: true,
-            enum: ['Bus', 'VehiculoPersonal', 'Tuc-Tuc', 'Uber', 'Taxi']
+            enum: ['Bus', 'VehiculoPersonal', 'Tuc-Tuc', 'Uber', 'Taxi', 'Mototaxi', 'Bicicleta', 'Caminata', 'Otro']
+        },
+        montoIda: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        montoVuelta: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        descripcion: {
+            type: String,
+            trim: true
         }
-    },
+    }],
     Hospedaje: {
         monto: {
             type: Number,
@@ -71,7 +81,7 @@ const viaticosSchema = new Schema({
         required: false
     }],
     Firma: {
-        type: String, // Guardaremos la firma como Data URL (base64)
+        type: String,
         required: false
     },
     FotoURL: { 
@@ -79,10 +89,7 @@ const viaticosSchema = new Schema({
         required: false,
         validate: {
             validator: function(url) {
-                // Si está vacío, es válido
                 if (!url || url.trim() === '') return true;
-                
-                // Si tiene valor, validar que sea una URL de imagen (permite query parameters)
                 return /^https?:\/\/.+\.(jpg|jpeg|png|webp)(\?.+)?$/i.test(url);
             },
             message: 'URL de imagen inválida'
@@ -99,9 +106,15 @@ const viaticosSchema = new Schema({
     timestamps: true 
 });
 
+// ✅ NUEVO: Calcular el total de movilización sumando todos los medios
 viaticosSchema.pre('save', function(next) {
-    // Sumar todos los gastos: Movilización + Hospedaje + Comida
-    this.Montogastado = (this.Movilizacion?.monto || 0) + 
+    // Calcular total de movilización (suma de ida y vuelta de todos los medios)
+    const totalMovilizacion = this.Movilizacion.reduce((total, mov) => {
+        return total + (mov.montoIda || 0) + (mov.montoVuelta || 0);
+    }, 0);
+    
+    // Sumar todos los gastos
+    this.Montogastado = totalMovilizacion + 
                        (this.Hospedaje?.monto || 0) + 
                        (this.Comida?.monto || 0);
     next();

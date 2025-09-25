@@ -15,6 +15,10 @@ export const createViaticos = async (req, res) => {
       }
     }
 
+    if (viaticosData.Movilizacion && typeof viaticosData.Movilizacion === "string") {
+      viaticosData.Movilizacion = JSON.parse(viaticosData.Movilizacion);
+    }
+
     if (viaticosData.firma && viaticosData.firma.startsWith('data:image')) {
       try {
         const firmaResult = await uploadBase64ToCloudinary(viaticosData.firma, "viaticos/firmas");
@@ -115,6 +119,10 @@ export const actualizarViatico = async (req, res) => {
         success: false,
         message: "Viático no encontrado",
       });
+    }
+
+    if (viaticosData.Movilizacion && typeof viaticosData.Movilizacion === "string") {
+      viaticosData.Movilizacion = JSON.parse(viaticosData.Movilizacion);
     }
 
     let fotosUrls = [];
