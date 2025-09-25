@@ -1,0 +1,31 @@
+{
+  "name": "viaticosbackend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "HC (Hector Cordero)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "cloudinary": "^2.7.0",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.18",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "path": "^0.12.7",
+    "url": "^0.11.4",
+    "uuid": "^13.0.0"
+  },
+  "type": "module"
+}
